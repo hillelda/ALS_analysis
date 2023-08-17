@@ -1,0 +1,7 @@
+id,sample,gsm_id,neurons,cell type,differentiation,genotype
+SRR5256874_5,FUS_WT_4,GSM2490560,Motoneurons day12+7,iPSC-derived motoneurons,days of differentiation: 12+7,FUS-WT
+SRR5256876,FUS_WT_5,GSM2490561,Motoneurons day12+7,iPSC-derived motoneurons,days of differentiation: 12+7,FUS-WT
+SRR5256877_8,FUS_WT_6,GSM2490562,Motoneurons day12+7,iPSC-derived motoneurons,days of differentiation: 12+7,FUS-WT
+SRR5256879,FUS_P525L_4,GSM2490563,Motoneurons day12+7,iPSC-derived motoneurons,days of differentiation: 12+7,FUS-P525L/P525L
+SRR5256880_1,FUS_P525L_5,GSM2490564,Motoneurons day12+7,iPSC-derived motoneurons,days of differentiation: 12+7,FUS-P525L/P525L
+SRR5256882_3,FUS_P525L_6,GSM2490565,Motoneurons day12+7,iPSC-derived motoneurons,days of differentiation: 12+7,FUS-P525L/P525L
