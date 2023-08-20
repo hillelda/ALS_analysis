@@ -4,63 +4,35 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-
-def load_data(filename: str) -> pd.DataFrame:
-    """
-    Load cvs file to pd frame
-    ----------
-    filename: str
-        Path to house prices dataset
-
-    Returns
-    -------
-    Design matrix and response vector (Temp)
-    """
-    df = pd.read_csv(filename)
-    return df
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
-    # data_files = ["C:/Users/H/PycharmProjects/ALS_analysis/working data - ALS/GSE203170_tRF_SgGens_output.csv"]
-    data_files = ["../ALS_analysis/working data - ALS/GSE203170_tRF_SgGens_output.csv"]
-    df = pd.read_csv(data_files[0]) # todo: make it work for all data sets
+    files_location = "../ALS_analysis/working data - ALS/"
+    data_files = ["GSE203170_miRNA_SgGens_output.csv", "GSE203170_tRF_SgGens_output.csv", "GSE94888_miRNA_SgGens_output.csv", "GSE94888_tRF_SgGens_output.csv"]
+    for cur_file in data_files:
+        full_add = files_location + cur_file
+        df = pd.read_csv(full_add)
+        split_name = cur_file.split('_')
+        data_set_name = split_name[0] + " " + split_name[1]
 
-    # sources_list = df["transcript"].unique()
+        # refactor logFC from ln to log2
+        df["logFC"] = np.log2(np.exp(df["logFC"]))
+        # refactor FDR to -log10 FDR
+        df["FDR"] = -np.log10(df["FDR"])
 
-    # refactor logFC from ln to log2
-    df["logFC"] = np.log2(np.exp(df["logFC"]))
-    # refactor FDR to -log10 FDR
-    df["FDR"] = -np.log10(df["FDR"])
+        # add column for color significance
+        df['binary PValue'] = df['PValue'].apply(lambda x: "red" if x < 0.05 else "blue")
 
-    pl = go.Figure(go.Scatter(x=df["logFC"],
-                              y=df["FDR"],
-                              mode="markers",
-                              marker=dict(color="blue")))
-    pl.update_layout(title="ALS " + "SOMTHING",
-                     xaxis_title="Log2 ????",
-                     yaxis_title="Log(-10) ????")
+        # draw volcano plots
+        pl = go.Figure(
+            go.Scatter(x=df["logFC"],
+                                  y=df["FDR"],
+                                  mode="markers",
+                                  marker=dict(color=df['binary PValue'])))
+        pl.update_layout(title="ALS " + data_set_name,
+                         xaxis_title="Log2 FC",
+                         yaxis_title="-Log(10) FDR")
 
-    pl.show()
-
-
-
-
-    # sources_indexes = np.zeros(len(sources_list))
-    # sources_indexes = np.vstack((sources_list, sources_indexes)).T
-    # data = df.to_numpy()
-    # for source in sources_list:
-    #     pass
+        pl.show()
+        pl.write_html(file=full_add + "_plot")
 
 
 
