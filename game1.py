@@ -19,7 +19,7 @@ if __name__ == '__main__':
         df["FDR"] = -np.log10(df["FDR"])
 
         # add column for color significance
-        df['binary PValue'] = df['PValue'].apply(lambda x: "red" if x < 0.05 else "blue")
+        df['binary PValue'] = df['FDR'].apply(lambda x: "red" if x > -np.log10(0.05) else "blue")
 
         # draw volcano plots
         pl = go.Figure(
