@@ -87,11 +87,11 @@ if __name__ == '__main__':
     combined_df_1 = cross_sig_dfs(combined_df_1)
     combined_df_2 = cross_sig_dfs(combined_df_2)
 
-    column_to_drop = ['sig up als', 'sig down als', 'unsig up als', 'unsig down als', 'sig up bont', 'sig down bont',
-                      'unsig up bont', 'unsig down bont', 'isSg']
-
-    combined_df_1.drop(column_to_drop, axis=1, inplace=True)
-    combined_df_2.drop(column_to_drop, axis=1, inplace=True)
+    # column_to_drop = ['sig up als', 'sig down als', 'unsig up als', 'unsig down als', 'sig up bont', 'sig down bont',
+    #                   'unsig up bont', 'unsig down bont', 'isSg']
+    #
+    # combined_df_1.drop(column_to_drop, axis=1, inplace=True)
+    # combined_df_2.drop(column_to_drop, axis=1, inplace=True)
 
     combined_df_1.to_csv(files_location + 'GSE203170_ALS_BoNT_analysis_output.csv')
     combined_df_2.to_csv(files_location + 'GSE94888_ALS_BoNT_analysis_output.csv')
