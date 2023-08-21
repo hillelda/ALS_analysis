@@ -17,7 +17,7 @@ def draw_volcano_plots(df_list, full_add_list, ds_name_list):
                          xaxis_title="Log2 FC",
                          yaxis_title="-Log(10) FDR")
 
-        pl.show()
+        # pl.show()
         pl.write_html(file=full_add_list[i] + "_plot")
 
 
@@ -61,6 +61,15 @@ def pre_proccess_BoNT(files_location_address, cur_file):
     return Bo_NT_df
 
 
+def cross_sig_dfs(combined_df):
+    combined_df['sig up in both'] = (combined_df['sig up als']) & (combined_df['sig up bont'])
+    combined_df['sig down in both'] = (combined_df['sig down als']) & (combined_df['sig down bont'])
+    combined_df['sig down als & sig up bont'] = (combined_df['sig down als']) & (combined_df['sig up bont'])
+    combined_df['sig up als & sig down bont'] = (combined_df['sig up als']) & (combined_df['sig down bont'])
+
+    return combined_df
+
+
 if __name__ == '__main__':
     files_location = "../ALS_analysis/working data - ALS/"
     data_files = ["GSE203170_miRNA_SgGens_output.csv", "GSE203170_tRF_SgGens_output.csv", "GSE94888_miRNA_SgGens_output.csv", "GSE94888_tRF_SgGens_output.csv"]
@@ -68,10 +77,23 @@ if __name__ == '__main__':
     full_add_list = []
     ds_name_list = []
     pre_proccess_als(files_location, data_files, df_list, full_add_list, ds_name_list)
-    # draw_volcano_plots(df_list, full_add_list, ds_name_list)
+    draw_volcano_plots(df_list, full_add_list, ds_name_list)
 
     bont_pd = pre_proccess_BoNT(files_location, "DE_tRFs Arik BoNT_A 16.8.23.csv")
 
     combined_df_1 = pd.concat([df_list[1], bont_pd], axis=1, join='outer', sort=False)
     combined_df_2 = pd.concat([df_list[3], bont_pd], axis=1, join='outer', sort=False)
-    b = 1 # for debugging
+
+    combined_df_1 = cross_sig_dfs(combined_df_1)
+    combined_df_2 = cross_sig_dfs(combined_df_2)
+
+    column_to_drop = ['sig up als', 'sig down als', 'unsig up als', 'unsig down als', 'sig up bont', 'sig down bont',
+                      'unsig up bont', 'unsig down bont', 'isSg']
+
+    combined_df_1.drop(column_to_drop, axis=1, inplace=True)
+    combined_df_2.drop(column_to_drop, axis=1, inplace=True)
+
+    combined_df_1.to_csv(files_location + 'GSE203170_ALS_BoNT_analysis_output.csv')
+    combined_df_2.to_csv(files_location + 'GSE94888_ALS_BoNT_analysis_output.csv')
+
+    print("All Done")
