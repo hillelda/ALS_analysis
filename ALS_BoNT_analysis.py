@@ -18,7 +18,7 @@ def draw_volcano_plots(df_list, full_add_list, ds_name_list):
                          yaxis_title="-Log(10) FDR")
 
         # pl.show()
-        pl.write_html(file=full_add_list[i] + "_plot")
+        pl.write_html(file=full_add_list[i] + "_plot.html")
 
 
 def pre_process_als(files_location, data_files, df_list, full_add_list, ds_name_list):
