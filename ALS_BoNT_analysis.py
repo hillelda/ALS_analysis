@@ -21,7 +21,7 @@ def draw_volcano_plots(df_list, full_add_list, ds_name_list):
         pl.write_html(file=full_add_list[i] + "_plot")
 
 
-def pre_proccess_als(files_location, data_files, df_list, full_add_list, ds_name_list):
+def pre_process_als(files_location, data_files, df_list, full_add_list, ds_name_list):
     for cur_file in data_files:
         full_add = files_location + cur_file
         df = pd.read_csv(full_add)
@@ -43,7 +43,7 @@ def pre_proccess_als(files_location, data_files, df_list, full_add_list, ds_name
         df_list.append(df)
         full_add_list.append(full_add)
 
-def pre_proccess_BoNT(files_location_address, cur_file):
+def pre_process_BoNT(files_location_address, cur_file):
     full_add = files_location_address + cur_file
     Bo_NT_df = pd.read_csv(full_add)
     # refactor logFC from ln to log2
@@ -76,10 +76,10 @@ if __name__ == '__main__':
     df_list = []
     full_add_list = []
     ds_name_list = []
-    pre_proccess_als(files_location, data_files, df_list, full_add_list, ds_name_list)
+    pre_process_als(files_location, data_files, df_list, full_add_list, ds_name_list)
     draw_volcano_plots(df_list, full_add_list, ds_name_list)
 
-    bont_pd = pre_proccess_BoNT(files_location, "DE_tRFs Arik BoNT_A 16.8.23.csv")
+    bont_pd = pre_process_BoNT(files_location, "DE_tRFs Arik BoNT_A 16.8.23.csv")
 
     combined_df_1 = pd.concat([df_list[1], bont_pd], axis=1, join='outer', sort=False)
     combined_df_2 = pd.concat([df_list[3], bont_pd], axis=1, join='outer', sort=False)
