@@ -3,37 +3,75 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
+def draw_volcano_plots(df_list, full_add_list, ds_name_list):
+    for i, df in enumerate(df_list):
+        # draw volcano plots
+        df['binary PValue color'] = df['FDR'].apply(lambda x: "red" if x > -np.log10(0.05) else "blue")
 
-if __name__ == '__main__':
-    files_location = "../ALS_analysis/working data - ALS/"
-    data_files = ["GSE203170_miRNA_SgGens_output.csv", "GSE203170_tRF_SgGens_output.csv", "GSE94888_miRNA_SgGens_output.csv", "GSE94888_tRF_SgGens_output.csv"]
+        pl = go.Figure(
+            go.Scatter(x=df["logFC"],
+                       y=df["FDR"],
+                       mode="markers",
+                       marker=dict(color=df['binary PValue color'])))
+        pl.update_layout(title="ALS " + ds_name_list[i],
+                         xaxis_title="Log2 FC",
+                         yaxis_title="-Log(10) FDR")
+
+        pl.show()
+        pl.write_html(file=full_add_list[i] + "_plot")
+
+
+def pre_proccess_als(files_location, data_files, df_list, full_add_list, ds_name_list):
     for cur_file in data_files:
         full_add = files_location + cur_file
         df = pd.read_csv(full_add)
         split_name = cur_file.split('_')
-        data_set_name = split_name[0] + " " + split_name[1]
+        ds_name_list.append(split_name[0] + " " + split_name[1])
 
         # refactor logFC from ln to log2
         df["logFC"] = np.log2(np.exp(df["logFC"]))
         # refactor FDR to -log10 FDR
         df["FDR"] = -np.log10(df["FDR"])
 
-        # add column for color significance
-        df['binary PValue'] = df['FDR'].apply(lambda x: "red" if x > -np.log10(0.05) else "blue")
+        # Add one-hot columns for significance and sign
+        df['sig up als'] = (df['FDR'] > -np.log10(0.05)) & (df['logFC'] >= 0)
+        df['sig down als'] = (df['FDR'] > -np.log10(0.05)) & (df['logFC'] < 0)
+        df['unsig up als'] = (df['FDR'] <= -np.log10(0.05)) & (df['logFC'] >= 0)
+        df['unsig down als'] = (df['FDR'] <= -np.log10(0.05)) & (df['logFC'] < 0)
 
-        # draw volcano plots
-        pl = go.Figure(
-            go.Scatter(x=df["logFC"],
-                                  y=df["FDR"],
-                                  mode="markers",
-                                  marker=dict(color=df['binary PValue'])))
-        pl.update_layout(title="ALS " + data_set_name,
-                         xaxis_title="Log2 FC",
-                         yaxis_title="-Log(10) FDR")
+        df.set_index('transcript', inplace=True)
+        df_list.append(df)
+        full_add_list.append(full_add)
 
-        pl.show()
-        pl.write_html(file=full_add + "_plot")
+def pre_proccess_BoNT(files_location_address, cur_file):
+    full_add = files_location_address + cur_file
+    Bo_NT_df = pd.read_csv(full_add)
+    # refactor logFC from ln to log2
+    Bo_NT_df["logFC"] = np.log2(np.exp(Bo_NT_df["logFC"]))
+    # refactor FDR to -log10 FDR
+    Bo_NT_df["FDR"] = -np.log10(Bo_NT_df["FDR"])
+    # Add one-hot columns for significance and sign
+    Bo_NT_df['sig up bont'] = (Bo_NT_df['FDR'] > -np.log10(0.05)) & (Bo_NT_df['logFC'] >= 0)
+    Bo_NT_df['sig down bont'] = (Bo_NT_df['FDR'] > -np.log10(0.05)) & (Bo_NT_df['logFC'] < 0)
+    Bo_NT_df['unsig up bont'] = (Bo_NT_df['FDR'] <= -np.log10(0.05)) & (Bo_NT_df['logFC'] >= 0)
+    Bo_NT_df['unsig down bont'] = (Bo_NT_df['FDR'] <= -np.log10(0.05)) & (Bo_NT_df['logFC'] < 0)
+
+    Bo_NT_df.drop(Bo_NT_df.columns[0], axis=1, inplace=True)
+    Bo_NT_df.set_index('transcript', inplace=True)
+    return Bo_NT_df
 
 
+if __name__ == '__main__':
+    files_location = "../ALS_analysis/working data - ALS/"
+    data_files = ["GSE203170_miRNA_SgGens_output.csv", "GSE203170_tRF_SgGens_output.csv", "GSE94888_miRNA_SgGens_output.csv", "GSE94888_tRF_SgGens_output.csv"]
+    df_list = []
+    full_add_list = []
+    ds_name_list = []
+    pre_proccess_als(files_location, data_files, df_list, full_add_list, ds_name_list)
+    # draw_volcano_plots(df_list, full_add_list, ds_name_list)
 
+    bont_pd = pre_proccess_BoNT(files_location, "DE_tRFs Arik BoNT_A 16.8.23.csv")
+
+    combined_df_1 = pd.concat([df_list[1], bont_pd], axis=1, join='outer', sort=False)
+    combined_df_2 = pd.concat([df_list[3], bont_pd], axis=1, join='outer', sort=False)
     b = 1 # for debugging
