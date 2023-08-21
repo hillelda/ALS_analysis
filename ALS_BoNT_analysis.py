@@ -34,10 +34,10 @@ def pre_process_als(files_location, data_files, df_list, full_add_list, ds_name_
         df["FDR"] = -np.log10(df["FDR"])
 
         # Add one-hot columns for significance and sign
-        df['sig up als'] = (df['FDR'] > -np.log10(0.05)) & (df['logFC'] >= 0)
-        df['sig down als'] = (df['FDR'] > -np.log10(0.05)) & (df['logFC'] < 0)
-        df['unsig up als'] = (df['FDR'] <= -np.log10(0.05)) & (df['logFC'] >= 0)
-        df['unsig down als'] = (df['FDR'] <= -np.log10(0.05)) & (df['logFC'] < 0)
+        df['sig up als'] = (df['FDR'] < -np.log10(0.05)) & (df['logFC'] >= 0)
+        df['sig down als'] = (df['FDR'] < -np.log10(0.05)) & (df['logFC'] < 0)
+        df['unsig up als'] = (df['FDR'] >= -np.log10(0.05)) & (df['logFC'] >= 0)
+        df['unsig down als'] = (df['FDR'] >= -np.log10(0.05)) & (df['logFC'] < 0)
 
         df.set_index('transcript', inplace=True)
         df_list.append(df)
@@ -51,10 +51,10 @@ def pre_process_BoNT(files_location_address, cur_file):
     # refactor FDR to -log10 FDR
     Bo_NT_df["FDR"] = -np.log10(Bo_NT_df["FDR"])
     # Add one-hot columns for significance and sign
-    Bo_NT_df['sig up bont'] = (Bo_NT_df['FDR'] > -np.log10(0.05)) & (Bo_NT_df['logFC'] >= 0)
-    Bo_NT_df['sig down bont'] = (Bo_NT_df['FDR'] > -np.log10(0.05)) & (Bo_NT_df['logFC'] < 0)
-    Bo_NT_df['unsig up bont'] = (Bo_NT_df['FDR'] <= -np.log10(0.05)) & (Bo_NT_df['logFC'] >= 0)
-    Bo_NT_df['unsig down bont'] = (Bo_NT_df['FDR'] <= -np.log10(0.05)) & (Bo_NT_df['logFC'] < 0)
+    Bo_NT_df['sig up bont'] = (Bo_NT_df['FDR'] < -np.log10(0.05)) & (Bo_NT_df['logFC'] >= 0)
+    Bo_NT_df['sig down bont'] = (Bo_NT_df['FDR'] < -np.log10(0.05)) & (Bo_NT_df['logFC'] < 0)
+    Bo_NT_df['unsig up bont'] = (Bo_NT_df['FDR'] >= -np.log10(0.05)) & (Bo_NT_df['logFC'] >= 0)
+    Bo_NT_df['unsig down bont'] = (Bo_NT_df['FDR'] >= -np.log10(0.05)) & (Bo_NT_df['logFC'] < 0)
 
     Bo_NT_df.drop(Bo_NT_df.columns[0], axis=1, inplace=True)
     Bo_NT_df.set_index('transcript', inplace=True)
