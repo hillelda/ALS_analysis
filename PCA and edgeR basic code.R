@@ -2,7 +2,7 @@
           # Libraries etc. #####
 library(edgeR) ; library(ggplot2) ; library(ggfortify) ; library(matrixStats)
 
-setwd('C:/Users/H/Documents/Hebrew_University/Chermona_Soreq_Lab/DATA/project3 - ALS/working data - ALS')
+setwd('./working data - ALS')
 meta_trfs<-read.csv('GSE203170_tRF_meta.csv') ; meta_trfs<-meta_trfs[,-1]
 
 
