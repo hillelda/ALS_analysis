@@ -1,9 +1,0 @@
-id,sample,genetics,gsm_id,group
-SRR19241984,healthy MNs (80A_1),Ctrl,GSM6161043,healthy
-SRR19241983,healthy MNs (80A_2),Ctrl,GSM6161044,healthy
-SRR19241982,healthy MNs (79A_1),Ctrl,GSM6161045,healthy
-SRR19241981,healthy MNs (79A_2),Ctrl,GSM6161046,healthy
-SRR19241980,FUS H517Q homozygous (FUS_hom_1),Homo,GSM6161047,ALS
-SRR19241979,FUS H517Q homozygous (FUS_hom_2),Homo,GSM6161048,ALS
-SRR19241978,FUS H517Q heterozygous (FUS_het_1),Hetero,GSM6161049,ALS
-SRR19241977,FUS H517Q heterozygous (FUS_het_2),Hetero,GSM6161050,ALS
